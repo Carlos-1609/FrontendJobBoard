@@ -1,4 +1,5 @@
 import React from "react";
+import { Link, useNavigate } from "react-router";
 import UserInput from "../../components/UserInput";
 import { Mail, EyeOff, Lock } from "lucide-react";
 import { FaApple, FaGoogle, FaFacebookF } from "react-icons/fa";
@@ -6,9 +7,12 @@ import loginImage from "../../assets/login_image.png";
 import useCheckAuth from "../../hooks/CheckAuth";
 
 const Login = () => {
+  const navigate = useNavigate();
+
   let userInfo;
   let email = "carlosord1609@gmail.com";
   let password = "123456";
+
   const onLogin = async () => {
     try {
       const res = await fetch("http://localhost:8000/users/login", {
@@ -23,6 +27,7 @@ const Login = () => {
       //useCheckAuth(); //checks the access code is valid
       const data = await res.json();
       console.log("✅ Login success:", data);
+      navigate("/jobs");
     } catch (error) {
       console.error("Login Error: ", error.message);
     }
@@ -37,14 +42,14 @@ const Login = () => {
           id="email"
           placeholder="email@gmail.com"
           lblName="Email"
-          icon={Mail}
+          Icon={Mail}
         />
         <UserInput
           name="userPass"
           id="password"
           placeholder="*********"
           lblName="Password"
-          icon={Lock}
+          Icon={Lock}
         />
         <div className="flex justify-end font-bold cursor-pointer text-sm font-poppins text-red-400">
           Forgot Password?
@@ -58,9 +63,11 @@ const Login = () => {
             Login
           </button>
         </div>
-        <div className="flex justify-center font-bold cursor-pointer text-sm font-poppins text-black">
-          Dont have an account? Sign up
-        </div>
+        <Link to="/signup">
+          <div className="flex justify-center font-bold cursor-pointer text-sm font-poppins text-black">
+            Dont have an account? Sign up
+          </div>
+        </Link>
         <div className="flex items-center">
           <div className="flex-grow border-t border-gray-300"></div>
           <span className="px-4 text-gray-400 text-[13px] font-poppins">
