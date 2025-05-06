@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router";
 import UserInput from "../../components/UserInput";
 import { Mail, EyeOff, Lock } from "lucide-react";
 import { FaApple, FaGoogle, FaFacebookF } from "react-icons/fa";
-import loginImage from "../../assets/login_image.png";
+import loginImage from "../../assets/login_vector.jpg";
 import useCheckAuth from "../../hooks/CheckAuth";
 
 const Login = () => {
@@ -51,9 +51,11 @@ const Login = () => {
           lblName="Password"
           Icon={Lock}
         />
-        <div className="flex justify-end font-bold cursor-pointer text-sm font-poppins text-red-400">
-          Forgot Password?
-        </div>
+        <Link to="/forgotPassword">
+          <div className="flex justify-end font-bold cursor-pointer text-sm font-poppins text-red-400">
+            Forgot Password?
+          </div>
+        </Link>
         <div className="flex justify-center ">
           <button
             type="submit"
@@ -92,7 +94,7 @@ const Login = () => {
       </div>
       <div className="">
         <div className="">
-          <img className="w-[400px]" src={loginImage} alt="Dev illustration " />
+          <img className="w-[800px]" src={loginImage} alt="Dev illustration " />
         </div>
       </div>
     </div>
