@@ -1,30 +1,46 @@
 import { useForm, FormProvider } from "react-hook-form";
 import { useState } from "react";
-import signupImage from "../../assets/signup_image.png";
+import { ChevronDown } from "lucide-react";
+import signupImage from "../../assets/signup_vector.jpg";
 import { FormInput } from "../../components/FormInput";
 import {
+  email_validation,
   first_name_validation,
   last_name_validation,
+  password_validation,
 } from "../../utils/inputvalidation";
+import { FaApple, FaFacebookF, FaGoogle } from "react-icons/fa";
+import { Link } from "react-router";
 
 const SignUp = () => {
   const methods = useForm();
   const [success, setSuccess] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState("");
   const onSubmit = methods.handleSubmit((data) => {
     console.log(data);
     methods.reset();
     setSuccess(true);
-    alert("Sign up succesful");
+    const userInfo = {
+      ...data,
+      role: selectedOption === "" ? "Job Seeker" : selectedOption,
+    };
+    console.log(userInfo);
   });
+
+  const handleSelect = (value) => {
+    setSelectedOption(value);
+    setIsOpen(false);
+  };
   return (
-    <div className="bg-[#fff] min-h-screen flex items-center justify-evenly">
+    <div className="bg-[#fff] min-h-screen flex items-center justify-evenly lg:flex-row flex-col">
       <div>
-        <img className="w-[200px]" src={signupImage}></img>
+        <img className="w-[800px]" src={signupImage}></img>
       </div>
-      <div className="flex flex-col space-y-4">
+      <div className="flex flex-col space-y-4 mr-5">
         <h1 className="font-poppins font-bold text-[38px]">Sign Up</h1>
         <h2 className="text-[12px] opacity-45">
-          Let’s get you all st up so you can access your personal account.
+          Let’s get you all set up so you can access your personal account.
         </h2>
         <FormProvider {...methods}>
           <form
@@ -36,13 +52,84 @@ const SignUp = () => {
               <FormInput {...first_name_validation} />
               <FormInput {...last_name_validation} />
             </div>
+
+            <div className="flex flex-row space-x-10">
+              <FormInput {...email_validation} />
+            </div>
+            <div className="flex flex-row space-x-10">
+              <FormInput {...password_validation} />
+            </div>
+            <div className="flex flex-row space-x-10">
+              <div className="relative inline-block text-left">
+                <button
+                  type="button"
+                  onClick={() => setIsOpen(!isOpen)}
+                  className="inline-flex justify-between items-center gap-x-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none"
+                >
+                  {selectedOption || "User Type"}
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform ${
+                      isOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                {isOpen && (
+                  <div className="absolute z-10 mt-2 w-56 origin-top-right rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                    <div className="py-1">
+                      <button
+                        type="button"
+                        onClick={() => handleSelect("Job Seeker")}
+                        className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                      >
+                        Job Seeker
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleSelect("Recruiter")}
+                        className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                      >
+                        Recruiter
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
             <button
               type="submit"
-              className="bg-blue-400 cursor-pointer"
+              className="w-full  bg-[#3869EB] hover:bg-blue-700 text-white font-semibold text-lg rounded-lg py-3 px-8 transition-colors cursor-pointer"
               onClick={onSubmit}
             >
-              Submit
+              Create Account
             </button>
+            <div className="flex justify-center font-bold  text-sm font-poppins text-black">
+              Don't have an account?&nbsp;
+              <Link to="/">
+                <span className="text-red-500 font-poppins cursor-pointer">
+                  Login
+                </span>
+              </Link>
+            </div>
+            <div className="flex items-center">
+              <div className="flex-grow border-t border-gray-300"></div>
+              <span className="px-4 text-gray-400 text-[13px] font-poppins">
+                Or login with
+              </span>
+              <div className="flex-grow border-t border-gray-300"></div>
+            </div>
+            <div className="flex justify-center space-x-6">
+              <button className="border border-[#3869EB] p-3 px-20 rounded cursor-pointer">
+                <FaFacebookF className="text-[#1877F2] w-6 h-6" />
+              </button>
+              <button className="border border-[#3869EB] p-3 px-20 rounded cursor-pointer">
+                <FaGoogle className="text-[#4b99ff] w-6 h-6" />
+              </button>
+              <button className="border border-[#3869EB] p-4 px-20 rounded cursor-pointer">
+                <FaApple className="w-6 h-6 text-black" />
+              </button>
+            </div>
           </form>
         </FormProvider>
       </div>

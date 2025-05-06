@@ -63,11 +63,14 @@ const Login = () => {
             Login
           </button>
         </div>
-        <Link to="/signup">
-          <div className="flex justify-center font-bold cursor-pointer text-sm font-poppins text-black">
-            Dont have an account? Sign up
-          </div>
-        </Link>
+        <div className="flex justify-center font-bold  text-sm font-poppins text-black">
+          Don't have an account?&nbsp;
+          <Link to="/signup">
+            <span className="text-red-500 font-poppins cursor-pointer">
+              Sign up
+            </span>
+          </Link>
+        </div>
         <div className="flex items-center">
           <div className="flex-grow border-t border-gray-300"></div>
           <span className="px-4 text-gray-400 text-[13px] font-poppins">
