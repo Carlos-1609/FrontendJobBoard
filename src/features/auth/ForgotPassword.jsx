@@ -3,9 +3,38 @@ import { Mail, ChevronLeft } from "lucide-react";
 import recoverImage from "../../assets/recover_image.jpg";
 import UserInput from "../../components/UserInput";
 import { Link, useNavigate } from "react-router";
+import { useState } from "react";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
+
+  const [email, setEmail] = useState();
+
+  const onEmailVerification = async (e) => {
+    try {
+      e.preventDefault();
+      console.log(email);
+      const res = await fetch("http://localhost:8000/users/forgot-password", {
+        method: "Post",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+        credentials: "include", // accepts cookies
+      });
+      if (!res.ok) {
+        throw new Error("Email verification failed");
+      }
+      const data = await res.json();
+      console.log("✅ Email Verification Success:", data);
+      navigate("/verifycode", { state: email });
+    } catch (error) {
+      console.error("Email Verification Error: ", error.message);
+    }
+  };
+
+  const onChangeEmail = (e) => {
+    setEmail(e.target.value);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-evenly bg-[#fff] ">
       <div className="flex flex-col space-y-8">
@@ -30,13 +59,14 @@ const ForgotPassword = () => {
           placeholder="email@gmail.com"
           lblName="Email"
           Icon={Mail}
+          onChange={onChangeEmail}
         />
         <div className="flex justify-center ">
           <button
             type="submit"
             className=" w-full  bg-[#3869EB] hover:bg-blue-700 text-white font-semibold text-lg rounded-lg py-3 px-8 transition-colors cursor-pointer"
-            onClick={() => {
-              navigate("/verifyCode");
+            onClick={(e) => {
+              onEmailVerification(e);
             }}
           >
             Submit

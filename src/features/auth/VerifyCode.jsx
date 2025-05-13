@@ -1,9 +1,39 @@
 import verifyCodeImage from "../../assets/verify_code.jpg";
 import { Lock, ChevronLeft } from "lucide-react";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import UserInput from "../../components/UserInput";
+import { useState } from "react";
 const VerifyCode = () => {
   const navigate = useNavigate();
+  const { state } = useLocation(); //is the users email
+  const [code, setCode] = useState();
+
+  const onChangeCode = (e) => {
+    setCode(e.target.value);
+  };
+
+  const onVerifyCode = async (e) => {
+    try {
+      e.preventDefault();
+      const res = await fetch(
+        "http://localhost:8000/users/password-code-verification",
+        {
+          method: "Post",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: state, verificationCode: code }),
+          credentials: "include", // accepts cookies
+        }
+      );
+      if (!res.ok) {
+        throw new Error("Code verification failed");
+      }
+      const data = await res.json();
+      console.log("✅ Code Verification Success:", data);
+      navigate("/newPassword", { state: state });
+    } catch (error) {
+      console.error("Code Verification Error: ", error.message);
+    }
+  };
   return (
     <div className="min-h-screen flex items-center justify-evenly bg-[#fff] ">
       <div className="flex flex-col space-y-6 ml-5">
@@ -32,6 +62,9 @@ const VerifyCode = () => {
               type="text"
               placeholder="Enter the 6 digit code"
               className="bg-transparent outline-none flex-1 text-gray-700 font-poppins placeholder:text-[11px] text-[16px]"
+              onChange={(e) => {
+                onChangeCode(e);
+              }}
             />
           </div>
         </div>
@@ -45,7 +78,7 @@ const VerifyCode = () => {
           <button
             type="submit"
             className=" w-full  bg-[#3869EB] hover:bg-blue-700 text-white font-semibold text-lg rounded-lg py-3 px-8 transition-colors cursor-pointer"
-            onClick={() => navigate("/newPassword")}
+            onClick={(e) => onVerifyCode(e)}
           >
             Verify
           </button>

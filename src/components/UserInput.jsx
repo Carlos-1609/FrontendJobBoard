@@ -1,6 +1,6 @@
 import React from "react";
 
-const UserInput = ({ id, label, Icon, placeholder, name }) => {
+const UserInput = ({ id, label, Icon, placeholder, name, onChange }) => {
   return (
     <div className="relative w-full">
       {/* Floating Label */}
@@ -21,6 +21,7 @@ const UserInput = ({ id, label, Icon, placeholder, name }) => {
           name={name}
           placeholder={placeholder}
           className="bg-transparent outline-none flex-1 text-gray-700 font-poppins"
+          onChange={onChange}
         />
       </div>
     </div>
