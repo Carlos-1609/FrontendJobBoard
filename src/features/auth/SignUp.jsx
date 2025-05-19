@@ -3,30 +3,19 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import signupImage from "../../assets/signup_vector.jpg";
 import { FormInput } from "../../components/FormInput";
-import {
-  email_validation,
-  first_name_validation,
-  last_name_validation,
-  password_validation,
-} from "../../utils/inputvalidation";
 import { FaApple, FaFacebookF, FaGoogle } from "react-icons/fa";
 import { Link } from "react-router";
 
 const SignUp = () => {
   const methods = useForm();
+  const { handleSubmit } = methods;
   const [success, setSuccess] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
-  const onSubmit = methods.handleSubmit((data) => {
+
+  const onSubmit = (data) => {
     console.log(data);
-    methods.reset();
-    setSuccess(true);
-    const userInfo = {
-      ...data,
-      role: selectedOption === "" ? "Job Seeker" : selectedOption,
-    };
-    console.log(userInfo);
-  });
+  };
 
   const handleSelect = (value) => {
     setSelectedOption(value);
@@ -45,20 +34,61 @@ const SignUp = () => {
         <FormProvider {...methods}>
           <form
             className="flex flex-col space-y-5"
-            onSubmit={(e) => e.preventDefault()}
-            noValidate
+            onSubmit={handleSubmit(onSubmit)}
           >
-            <div className="flex flex-row space-x-10">
-              <FormInput {...first_name_validation} />
-              <FormInput {...last_name_validation} />
-            </div>
-
-            <div className="flex flex-row space-x-10">
-              <FormInput {...email_validation} />
-            </div>
-            <div className="flex flex-row space-x-10">
-              <FormInput {...password_validation} />
-            </div>
+            <FormInput
+              name="fullName"
+              placeholder="Please Enter Full Name"
+              type="text"
+              label="Full Name"
+              validation={{
+                required: "Full Name is required",
+                pattern: {
+                  value: /^[A-Za-z]+(?: [A-Za-z]+)*$/,
+                  message: "Pleaase enter a valid Name",
+                },
+              }}
+            />
+            <FormInput
+              name="email"
+              placeholder="Please Enter an email"
+              type="email"
+              label="Email"
+              validation={{
+                required: "Email is required",
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  messsage: "Please enter a valid email address",
+                },
+              }}
+            />
+            <FormInput
+              name="password"
+              placeholder="Please Enter your password"
+              type="text"
+              label="Password"
+              validation={{
+                required: "Please enter a passsword",
+                pattern: {
+                  value:
+                    /^(?=.{8,20}$)(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])(?!.*\s).*$/,
+                  message:
+                    "Password must be 8-20 chars, 1 uppercase, 1 number, 1 special char",
+                },
+              }}
+            />
+            <FormInput
+              name="confirmPassword"
+              placeholder="Please Confirm your password"
+              type="text"
+              label="Confirm Password"
+              validation={{
+                required: "Please confirm your password",
+                validate: (value) =>
+                  value === methods.getValues("password") ||
+                  "Passwords do not match",
+              }}
+            />
             <div className="flex flex-row space-x-10">
               <div className="relative inline-block text-left">
                 <button
@@ -100,12 +130,11 @@ const SignUp = () => {
             <button
               type="submit"
               className="w-full  bg-[#3869EB] hover:bg-blue-700 text-white font-semibold text-lg rounded-lg py-3 px-8 transition-colors cursor-pointer"
-              onClick={onSubmit}
             >
               Create Account
             </button>
             <div className="flex justify-center font-bold  text-sm font-poppins text-black">
-              Don't have an account?&nbsp;
+              Already have an account?&nbsp;
               <Link to="/">
                 <span className="text-red-500 font-poppins cursor-pointer">
                   Login
