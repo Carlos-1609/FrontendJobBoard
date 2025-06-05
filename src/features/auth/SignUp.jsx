@@ -4,17 +4,52 @@ import { ChevronDown } from "lucide-react";
 import signupImage from "../../assets/signup_vector.jpg";
 import { FormInput } from "../../components/FormInput";
 import { FaApple, FaFacebookF, FaGoogle } from "react-icons/fa";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 const SignUp = () => {
   const methods = useForm();
-  const { handleSubmit } = methods;
+  const navigate = useNavigate();
+  const {
+    handleSubmit,
+    setError,
+    formState: { isSubmitting, errors },
+  } = methods;
   const [success, setSuccess] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    try {
+      setError("root", {
+        message: "",
+      });
+      let newUser = {
+        name: data["fullName"],
+        email: data["email"],
+        password: data["password"],
+        role:
+          selectedOption === "" ? "job seeker" : selectedOption.toLowerCase(),
+        resume: "",
+      };
+      //console.log("this is the new user", newUser);
+      const res = await fetch("http://localhost:8000/users/signup", {
+        method: "Post",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...newUser }),
+        credentials: "include", // accepts cookies
+      });
+
+      if (!res.ok) {
+        throw new Error("Code verification failed");
+      }
+      navigate("/jobs");
+    } catch (error) {
+      console.log(error);
+      setError("root", {
+        message:
+          "There was ane error when creating the account, please try again",
+      });
+    }
   };
 
   const handleSelect = (value) => {
@@ -128,11 +163,17 @@ const SignUp = () => {
             </div>
 
             <button
+              disabled={isSubmitting}
               type="submit"
-              className="w-full  bg-[#3869EB] hover:bg-blue-700 text-white font-semibold text-lg rounded-lg py-3 px-8 transition-colors cursor-pointer"
+              className="w-full  bg-[#3869EB] hover:bg-blue-700 text-white font-semibold text-lg rounded-lg py-3 px-8 transition-colors cursor-pointer "
             >
-              Create Account
+              {isSubmitting ? "Loading..." : "Create Account"}
             </button>
+            {errors.root && (
+              <span className="mt-1 text-red-500 text-[13px] ">
+                {errors.root.message}
+              </span>
+            )}
             <div className="flex justify-center font-bold  text-sm font-poppins text-black">
               Already have an account?&nbsp;
               <Link to="/">
